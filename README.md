@@ -120,3 +120,49 @@ The repository includes Jupyter notebooks for Alice and Bob, who exchange a text
 
 *   `NIST-80022-Statistical Test Suite.pdf`: This file contains the NIST 800-22 Statistical Test Suite, which can be used to test the randomness of the VQR/TURN random number generator.
 *   `README.md`: This file contains the documentation for the VQR/TURN project.
+
+## Quantum Privacy Preserving (QPP)
+
+This repository contains companion Jupyter notebooks for Quantum Permutation Pad (QPP) implementations with Qiskit Runtime and Qiskit AerSimulator ranging from 2 to 9 qubits. It serves as illustrations for the paper: Chancé, A. (2024). Quantum Permutation Pad with Qiskit Runtime. In: Femmam, S., Lorenz, P. (eds). ICCNT 2022. Springer, Cham. https://doi.org/10.1007/978-3-031-59619-3_12
+
+Alain's talk, “An Efficient 8-Qubit Quantum Permutation Pad (QPP) Implementation Running on a Laptop”, has been presented at the 2025 IEEE 14th International Conference on Communications, Circuits and Systems (ICCCAS).
+
+The QPP implementations utilize:
+
+*   FastAPI on the server (Remote Agent)
+*   requests module on the client
+*   File content encoded in Base64
+*   JSON-RPC 2.0 over HTTP
+
+The repository includes Jupyter notebooks for Alice and Bob, who exchange a text file and an image file using QPP.
+
+The QPP folder contains the implementation of the Quantum Permutation Pad (QPP) with Qiskit Runtime. It includes the code for Alice and Bob, who exchange a text file and an image file using QPP. It also includes the Gradio UI for configuring and running the QPP simulation.
+*   QPP/Alice: Contains the code for Alice, the sender.
+*   QPP/Bob: Contains the code for Bob, the receiver.
+*   QPP/QPP_2_qubits: Contains the code for the 2-qubit QPP implementation.
+*   QPP/QPP_4_qubits: Contains the code for the 4-qubit QPP implementation.
+*   QPP/QPP_9_qubits: Contains the code for the 9-qubit QPP implementation.
+
+QPP/README.md: This file contains the documentation for the QPP folder.
+</final_file_content>
+
+IMPORTANT: For any future changes to this file, use the final_file_content shown above as your reference. This content reflects the current state of the file, including any auto-formatting (e.g., if you used single quotes but the formatter converted them to double quotes). Always base your SEARCH/REPLACE operations on this final version to ensure accuracy.
+
+<environment_details>
+# VSCode Visible Files
+README.md
+
+# VSCode Open Tabs
+README.md
+vqr-turn2.py
+vqr-turn1.py
+vqr_turn_rng.py
+
+# Current Time
+8/28/2025, 11:13:11 PM (Africa/Cairo, UTC+3:00)
+
+# Context Window Usage
+217,398 / 1,048.576K tokens used (21%)
+
+# Current Mode
+ACT MODE
