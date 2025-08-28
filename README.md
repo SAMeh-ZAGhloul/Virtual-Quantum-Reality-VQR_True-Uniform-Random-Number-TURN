@@ -81,5 +81,42 @@ The repository includes Jupyter notebooks for Alice and Bob, who exchange a text
 *   `vqr_turn_rng.py`: This file contains the `VQRTurnRNG` class, which implements the core logic for the VQR/TURN random number generator.
 *   `vqr-turn2.py`: This file contains another alternative implementation of the VQR/TURN random number generator.
 
+### Functions in `vqr_turn_rng.py`
+
+*   `_timing_jitter_bytes(n_bytes: int = 64)`: Harvests timing jitter by tight-loop sampling of perf_counter_ns.
+*   `_von_neumann(bits: bytes)`: Applies Von Neumann extractor on a bitstream given as bytes.
+*   `_health_checks(raw: bytes)`: Performs basic online health checks on raw entropy.
+*   `HMAC_DRBG.__init__(self, seed_material: bytes)`: Initializes the HMAC_DRBG class.
+*   `HMAC_DRBG._update(self, provided_data: bytes = b"")`: Updates the HMAC_DRBG state.
+*   `HMAC_DRBG.reseed(self, seed_material: bytes)`: Reseeds the HMAC_DRBG with new seed material.
+*   `HMAC_DRBG.generate(self, n_bytes: int)`: Generates random bytes using the HMAC_DRBG.
+*   `VQRTurnRNG.__init__(self, reseed_interval_bytes: int = 1<<20)`: Initializes the VQRTurnRNG class.
+*   `VQRTurnRNG._collect_entropy(self, target_bytes: int = 64)`: Collects entropy from multiple sources.
+*   `VQRTurnRNG.reseed(self)`: Reseeds the VQRTurnRNG with new entropy.
+*   `VQRTurnRNG.random_bytes(self, n: int)`: Generates random bytes using the VQRTurnRNG.
+*   `VQRTurnRNG.random_u64(self)`: Generates a random 64-bit unsigned integer.
+*   `VQRTurnRNG.random(self)`: Generates a random float between 0 and 1.
+*   `monobit_frequency_test(bits: bytes)`: Performs a monobit frequency test on a bitstring.
+*   `chi_square_bytes_uniformity(bytes_seq: bytes)`: Performs a chi-square test for uniformity over bytes.
+
+### Functions in `vqr-turn1.py`
+
+*   `random_float()`: Returns a random float value.
+*   `random_u64()`: Returns a random 64-bit unsigned integer value.
+*   `random_bytes(req: BytesRequest)`: Returns a base64 encoded string of random bytes.
+*   `jsonrpc(req: dict)`: Handles JSON-RPC requests.
+*   `get_float()`: Returns a random float value for the Gradio UI.
+*   `get_u64()`: Returns a random 64-bit unsigned integer value for the Gradio UI.
+*   `get_bytes(n)`: Returns a base64 encoded string of random bytes for the Gradio UI.
+*   `launch_gradio()`: Launches the Gradio UI.
+
+### Functions in `vqr-turn2.py`
+
+*   `generate_vqr_bits(n_bits: int = 1024)`: Simulates Virtual Quantum Reality (VQR) random number generation.
+*   `run_all_tests(bits: str)`: Runs all randomness tests on a bitstring.
+*   `vqr_turn_service(n_bits: int = 1024)`: Generates random bits and runs NIST tests on them.
+*   `gradio_interface(n_bits)`: Generates random bits and runs NIST tests on them for the Gradio UI.
+*   `generate(n_bits: int = 1024)`: Generates random bits and runs NIST tests on them for the FastAPI API.
+
 *   `NIST-80022-Statistical Test Suite.pdf`: This file contains the NIST 800-22 Statistical Test Suite, which can be used to test the randomness of the VQR/TURN random number generator.
 *   `README.md`: This file contains the documentation for the VQR/TURN project.
