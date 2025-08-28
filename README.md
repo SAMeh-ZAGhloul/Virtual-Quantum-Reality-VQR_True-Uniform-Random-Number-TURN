@@ -54,6 +54,21 @@ It’s a hybrid approach:
 *   Not purely PRNG (deterministic).
 *   Not strictly QRNG (needs quantum device).
 
+## Quantum Privacy Preserving (QPP)
+
+This repository contains companion Jupyter notebooks for Quantum Permutation Pad (QPP) implementations with Qiskit Runtime and Qiskit AerSimulator ranging from 2 to 9 qubits. It serves as illustrations for the paper: Chancé, A. (2024). Quantum Permutation Pad with Qiskit Runtime. In: Femmam, S., Lorenz, P. (eds). ICCNT 2022. Springer, Cham. https://doi.org/10.1007/978-3-031-59619-3_12
+
+Alain's talk, “An Efficient 8-Qubit Quantum Permutation Pad (QPP) Implementation Running on a Laptop”, has been presented at the 2025 IEEE 14th International Conference on Communications, Circuits and Systems (ICCCAS).
+
+The QPP implementations utilize:
+
+*   FastAPI on the server (Remote Agent)
+*   requests module on the client
+*   File content encoded in Base64
+*   JSON-RPC 2.0 over HTTP
+
+The repository includes Jupyter notebooks for Alice and Bob, who exchange a text file and an image file using QPP.
+
 ## Repository Documentation
 
 *   `vqr_turn_rng.py`: This file contains the implementation of the VQR/TURN random number generator.
