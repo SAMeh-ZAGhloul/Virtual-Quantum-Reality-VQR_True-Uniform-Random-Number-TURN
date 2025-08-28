@@ -59,5 +59,12 @@ It’s a hybrid approach:
 *   `vqr_turn_rng.py`: This file contains the implementation of the VQR/TURN random number generator.
 *   `vqr-turn1.py`: This file contains an alternative implementation of the VQR/TURN random number generator.
 *   `vqr-turn2.py`: This file contains another alternative implementation of the VQR/TURN random number generator.
+
+### Implementations
+
+*   `vqr-turn1.py`: This file utilizes the `VQRTurnRNG` class from `vqr_turn_rng.py` to provide a VQR/TURN random number generator.
+*   `vqr_turn_rng.py`: This file contains the `VQRTurnRNG` class, which implements the core logic for the VQR/TURN random number generator.
+*   `vqr-turn2.py`: This file contains another alternative implementation of the VQR/TURN random number generator.
+
 *   `NIST-80022-Statistical Test Suite.pdf`: This file contains the NIST 800-22 Statistical Test Suite, which can be used to test the randomness of the VQR/TURN random number generator.
 *   `README.md`: This file contains the documentation for the VQR/TURN project.
