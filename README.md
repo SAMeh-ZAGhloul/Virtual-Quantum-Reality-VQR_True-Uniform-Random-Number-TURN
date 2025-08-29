@@ -8,7 +8,7 @@ This repository hosts two distinct but related projects: **Virtual Quantum Reali
 - [VQR – True Uniform Randomness (TURN)](#vqr--true-uniform-randomness-turn)
   - [Overview](#overview)
   - [Architecture Diagram](#architecture-diagram)
-  - [Core RNG Engine: `vqr_turn_rng.py` Analysis](#core-rng-engine-vqr_turn_rngpy-analysis)
+  - [Core RNG Engine: `vqr_turn_rng` Analysis](#core-rng-engine-vqr_turn_rngpy-analysis)
   - [Implementations](#implementations)
   - [Installation](#installation)
   - [Usage](#usage)
@@ -55,7 +55,7 @@ graph TD
         A -- "Provides High-Quality Randomness For" --> K;
     end
 
-    style VQR_TURN fill:#f9f,stroke:#333,stroke-width:2px
+    style VQR_TURN fill:#ff99ff,stroke:#333,stroke-width:2px
     style QPP fill:#ccf,stroke:#333,stroke-width:2px
     style Integrations fill:#cfc,stroke:#333,stroke-width:2px
 ```
