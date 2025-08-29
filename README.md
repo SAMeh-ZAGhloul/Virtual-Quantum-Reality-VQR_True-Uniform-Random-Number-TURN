@@ -7,6 +7,8 @@ This repository hosts two distinct but related projects: **Virtual Quantum Reali
 ## Table of Contents
 - [VQR – True Uniform Randomness (TURN)](#vqr--true-uniform-randomness-turn)
   - [Overview](#overview)
+  - [Architecture Diagram](#architecture-diagram)
+  - [Core RNG Engine: `vqr_turn_rng.py` Analysis](#core-rng-engine-vqr_turn_rngpy-analysis)
   - [Implementations](#implementations)
   - [Installation](#installation)
   - [Usage](#usage)
@@ -25,11 +27,72 @@ This repository hosts two distinct but related projects: **Virtual Quantum Reali
 
 This project explores the conceptual and practical aspects of generating truly unpredictable and uniform random numbers in software, aiming to mimic quantum randomness without requiring quantum hardware. It leverages techniques like entropy amplification, bias correction, and cryptographic hardening to produce high-quality randomness.
 
+### Architecture Diagram
+
+The following diagram illustrates the architecture of the VQR/TURN project, its components, and its potential integration with the QPP project.
+
+```mermaid
+graph TD
+    subgraph VQR_TURN [VQR - True Uniform Random Number]
+        A[vqr_turn_rng.py <br> Core RNG Engine] --> B{HMAC-DRBG};
+        C[Entropy Sources <br> os.urandom, Timing Jitter] --> D[Health Checks & Von Neumann Extractor];
+        D --> A;
+
+        E[vqr-turn1.py <br> Web Service] -- "Imports & Uses" --> A;
+        F[FastAPI <br> REST & JSON-RPC] --> E;
+        G[Gradio <br> Web UI] --> E;
+
+        H[vqr-turn2.py <br> Alternative RNG & Tester];
+        I[NIST SP 800-22 Tests] --> H;
+        J[Gradio <br> Web UI] --> H;
+    end
+
+    subgraph QPP [Quantum Permutation Pad]
+        K[QPP Project <br> Qiskit Implementation];
+    end
+
+    subgraph Integrations
+        A -- "Provides High-Quality Randomness For" --> K;
+    end
+
+    style VQR_TURN fill:#f9f,stroke:#333,stroke-width:2px
+    style QPP fill:#ccf,stroke:#333,stroke-width:2px
+    style Integrations fill:#cfc,stroke:#333,stroke-width:2px
+```
+
+### Core RNG Engine: `vqr_turn_rng.py` Analysis
+
+The `vqr_turn_rng.py` script implements a conceptual **Virtual Quantum Reality / True Uniform Random Number (VQR/TURN)** generator. It is designed as a teaching and demonstration tool, not as a cryptographically secure generator for production use.
+
+The architecture follows a sophisticated multi-stage pipeline to produce high-quality random numbers:
+
+1.  **Entropy Collection:**
+    *   It gathers initial randomness (entropy) from two distinct sources:
+        *   `os.urandom`: A cryptographically strong source of randomness provided by the operating system.
+        *   **Timing Jitter:** A custom function (`_timing_jitter_bytes`) that measures the tiny, unpredictable variations in CPU execution time from a tight loop. This mimics a physical entropy source.
+
+2.  **Health Checks & Conditioning:**
+    *   Before use, the raw entropy undergoes online **health checks** to detect potential failures or biases. These include:
+        *   A **Repetition Count Test** to ensure no long runs of identical bits.
+        *   An **Adaptive Proportion Test** to verify that the number of 0s and 1s is balanced.
+    *   The raw data is then passed through a **Von Neumann extractor** (`_von_neumann`), a classic algorithm that removes statistical bias from a bitstream.
+    *   Finally, the debiased entropy is mixed and condensed into a fixed-size seed using the **SHA3-256** hash function.
+
+3.  **Random Number Generation:**
+    *   The processed seed is used to initialize a **HMAC-DRBG** (Deterministic Random Bit Generator), which is implemented following the style of NIST SP 800-90A, a widely recognized standard.
+    *   This DRBG is the core engine that expands the initial seed into a long stream of pseudo-random bytes.
+
+4.  **Reseeding:**
+    *   To ensure long-term security and prevent the internal state from becoming stale, the generator automatically **reseeds** itself with fresh entropy after generating a certain amount of data (1 MB by default).
+
+5.  **Statistical Validation:**
+    *   The file also includes utility functions for basic statistical analysis of the output, such as a **Monobit Frequency Test** and a **Chi-Square Uniformity Test**, to provide a sanity check on the quality of the generated random numbers.
+
 ### Implementations
 
 There are three Python scripts in this project:
 
-*   `vqr_turn_rng.py`: This file contains the core implementation of the VQR/TURN random number generator. It includes classes for a HMAC-DRBG (Hash-based Message Authentication Code - Deterministic Random Bit Generator) and the main `VQRTurnRNG` which collects entropy from `os.urandom` and timing jitter, applies a Von Neumann extractor to remove bias, and uses the HMAC-DRBG to generate random numbers.
+*   `vqr_turn_rng.py`: This file contains the core implementation of the VQR/TURN random number generator. For a detailed breakdown, see the [Core RNG Engine Analysis](#core-rng-engine-vqr_turn_rngpy-analysis) section above.
 
 *   `vqr-turn1.py`: This script exposes the `VQRTurnRNG` from `vqr_turn_rng.py` as a web service. It uses FastAPI to create REST and JSON-RPC 2.0 endpoints for generating random floats, 64-bit unsigned integers, and bytes. It also provides a simple web interface using Gradio for easy demonstration.
 
