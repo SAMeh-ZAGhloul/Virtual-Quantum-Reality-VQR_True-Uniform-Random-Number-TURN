@@ -1,6 +1,7 @@
 # nist_tests.py
 import math
 from scipy.special import erfc
+import sp80022suite
 
 def frequency_test(bits: str):
     """NIST Frequency (Monobit) Test."""
@@ -23,7 +24,27 @@ def runs_test(bits: str):
 def run_all_tests(bits: str):
     """Run all implemented randomness tests on a bitstring."""
     results = {
-        "frequency_test": frequency_test(bits),
-        "runs_test": runs_test(bits)
+        "custom_frequency_test": frequency_test(bits),
+        "custom_runs_test": runs_test(bits)
     }
+
+    clean_bits = "".join(c for c in bits if c in "01")
+    bit_list = [int(b) for b in clean_bits]
+
+    for test in dir(sp80022suite):
+        if not test.startswith("_"):
+            func = getattr(sp80022suite, test)
+            if callable(func):
+                try:
+                    # Handle different test signatures
+                    if test in ["block_frequency", "linear_complexity"]:
+                        results[test] = func(bit_list, 128)  # block size
+                    elif test in ["approximate_entropy", "serial"]:
+                        results[test] = func(bit_list, 10)   # m = 10
+                    elif test in ["overlapping_template_matchings", "non_overlapping_template_matchings"]:
+                        results[test] = func(bit_list, [1,1,1,1])  # template "1111"
+                    else:
+                        results[test] = func(bit_list)
+                except Exception as e:
+                    results[test] = f"Error: {e}"
     return results

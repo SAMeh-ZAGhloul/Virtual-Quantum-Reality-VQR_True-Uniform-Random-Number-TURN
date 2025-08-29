@@ -7,8 +7,8 @@ def test_nist_module():
     Tests the NIST module by generating a random bitstring and running the
     statistical tests on it.
     """
-    # Generate a random bitstring of 10000 bits
-    bit_string = generate_vqr_bits(10000)
+    # Generate a random bitstring of 1000000 bits
+    bit_string = generate_vqr_bits(1000000)
 
     # Run the NIST statistical tests
     results = run_all_tests(bit_string)
