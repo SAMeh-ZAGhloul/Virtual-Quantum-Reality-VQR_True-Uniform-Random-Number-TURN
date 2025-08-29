@@ -55,7 +55,7 @@ graph TD
         A -- "Provides High-Quality Randomness For" --> K;
     end
 
-    style VQR_TURN fill:#a9adb0,stroke:#333,stroke-width:2px
+    style VQR_TURN fill:#6cb7f0,stroke:#333,stroke-width:2px
     style QPP fill:#ccf,stroke:#333,stroke-width:2px
     style Integrations fill:#cfc,stroke:#333,stroke-width:2px
 ```
