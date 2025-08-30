@@ -45,11 +45,16 @@ def _run_assessment(bits: str, tool: str):
         output = process.stdout
         
         # Parse the output to get the entropy estimate
-        entropy_match = re.search(r"h_est = (\d+\.\d+)", output)
+        entropy_match = re.search(r"min\(H_original, 8 X H_bitstring\): (\d+\.\d+)", output)
         if entropy_match:
             results["min_entropy"] = float(entropy_match.group(1))
         else:
-            results["min_entropy"] = "Could not parse entropy estimate from output."
+            # Fallback for IID, which has a different output format
+            entropy_match = re.search(r"H_bitstring: (\d+\.\d+)", output)
+            if entropy_match:
+                results["min_entropy"] = float(entropy_match.group(1))
+            else:
+                results["min_entropy"] = "Could not parse entropy estimate from output."
             
         results["raw_output"] = output
 
