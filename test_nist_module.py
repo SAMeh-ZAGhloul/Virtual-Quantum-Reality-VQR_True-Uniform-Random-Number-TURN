@@ -1,22 +1,26 @@
 # test_nist_module.py
-from nist_tests import run_all_tests
+from nist_tests import run_sp800_90b_assessment
 from vqr_turn import generate_vqr_bits
 
 def test_nist_module():
     """
     Tests the NIST module by generating a random bitstring and running the
-    statistical tests on it.
+    SP 800-90B entropy assessment on it.
     """
-    # Generate a random bitstring of 1000000 bits
+    # Generate a random bitstring of 1,000,000 bits
     bit_string = generate_vqr_bits(1000000)
 
-    # Run the NIST statistical tests
-    results = run_all_tests(bit_string)
+    # Run the NIST SP 800-90B assessment
+    results = run_sp800_90b_assessment(bit_string)
 
     # Print the results
-    print("NIST Statistical Test Suite Results:")
-    for test_name, result in results.items():
-        print(f"- {test_name}: {result}")
+    print("NIST SP 800-90B Assessment Results:")
+    if "error" in results:
+        print(f"An error occurred: {results['error']}")
+    else:
+        print(f"  Minimum Entropy: {results.get('min_entropy', 'N/A')}")
+        print("\n--- Raw Output ---")
+        print(results.get('raw_output', ''))
 
 if __name__ == "__main__":
     test_nist_module()

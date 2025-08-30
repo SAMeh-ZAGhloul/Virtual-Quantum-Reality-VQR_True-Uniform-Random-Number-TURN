@@ -1,50 +1,56 @@
 # nist_tests.py
-import math
-from scipy.special import erfc
-import sp80022suite
+import subprocess
+import tempfile
+import os
+import re
 
-def frequency_test(bits: str):
-    """NIST Frequency (Monobit) Test."""
-    n = len(bits)
-    s_n = sum(2 * int(b) - 1 for b in bits)
-    s_obs = abs(s_n) / math.sqrt(n)
-    p_value = erfc(s_obs / math.sqrt(2))
-    return p_value
+def run_sp800_90b_assessment(bits: str):
+    """
+    Runs the NIST SP 800-90B non-IID assessment on a bitstring.
+    """
+    # The C++ tool expects raw bytes, not a string of '0's and '1's.
+    # We need to convert the bitstring into a byte array.
+    if len(bits) % 8 != 0:
+        # Pad with zeros if not a multiple of 8
+        bits += '0' * (8 - len(bits) % 8)
+    
+    byte_array = bytearray()
+    for i in range(0, len(bits), 8):
+        byte = bits[i:i+8]
+        byte_array.append(int(byte, 2))
 
-def runs_test(bits: str):
-    """NIST Runs Test."""
-    n = len(bits)
-    pi = sum(int(b) for b in bits) / n
-    if abs(pi - 0.5) >= (2 / math.sqrt(n)):
-        return 0.0
-    v_obs = sum(1 for i in range(n - 1) if bits[i] != bits[i+1]) + 1
-    p_value = erfc(abs(v_obs - 2 * n * pi * (1 - pi)) / (2 * math.sqrt(2 * n) * pi * (1 - pi)))
-    return p_value
+    with tempfile.NamedTemporaryFile(delete=False) as tmp:
+        tmp.write(byte_array)
+        tmp_path = tmp.name
 
-def run_all_tests(bits: str):
-    """Run all implemented randomness tests on a bitstring."""
-    results = {
-        "custom_frequency_test": frequency_test(bits),
-        "custom_runs_test": runs_test(bits)
-    }
+    results = {}
+    # Path to the compiled non-IID test executable
+    executable_path = os.path.join("NIST.SP800-90B_Entropy-Assessment", "cpp", "ea_non_iid")
+    try:
+        # Run the non-IID test
+        # The tool takes the file path and bits per symbol (8 for bytes)
+        command = [executable_path, "-v", tmp_path, "8"]
+        process = subprocess.run(command, capture_output=True, text=True, check=True)
+        
+        output = process.stdout
+        
+        # Parse the output to get the entropy estimate
+        entropy_match = re.search(r"h_est = (\d+\.\d+)", output)
+        if entropy_match:
+            results["min_entropy"] = float(entropy_match.group(1))
+        else:
+            results["min_entropy"] = "Could not parse entropy estimate from output."
+            
+        results["raw_output"] = output
 
-    clean_bits = "".join(c for c in bits if c in "01")
-    bit_list = [int(b) for b in clean_bits]
-
-    for test in dir(sp80022suite):
-        if not test.startswith("_"):
-            func = getattr(sp80022suite, test)
-            if callable(func):
-                try:
-                    # Handle different test signatures
-                    if test in ["block_frequency", "linear_complexity"]:
-                        results[test] = func(bit_list, 128)  # block size
-                    elif test in ["approximate_entropy", "serial"]:
-                        results[test] = func(bit_list, 10)   # m = 10
-                    elif test in ["overlapping_template_matchings", "non_overlapping_template_matchings"]:
-                        results[test] = func(bit_list, [1,1,1,1])  # template "1111"
-                    else:
-                        results[test] = func(bit_list)
-                except Exception as e:
-                    results[test] = f"Error: {e}"
+    except FileNotFoundError:
+        results["error"] = f"Executable not found at {executable_path}. Please compile the SP 800-90B assessment tool."
+    except subprocess.CalledProcessError as e:
+        results["error"] = f"Error running SP 800-90B assessment tool: {e.stderr}"
+    except Exception as e:
+        results["error"] = f"An unexpected error occurred: {e}"
+    finally:
+        # Clean up the temporary file
+        os.remove(tmp_path)
+        
     return results
