@@ -4,11 +4,21 @@ import tempfile
 import os
 import re
 
-def run_sp800_90b_assessment(bits: str):
+def run_sp800_90b_assessments(bits: str):
     """
-    Runs the NIST SP 800-90B non-IID assessment on a bitstring.
+    Runs the NIST SP 800-90B IID and non-IID assessments on a bitstring.
     """
-    # The C++ tool expects raw bytes, not a string of '0's and '1's.
+    results = {
+        "iid": _run_assessment(bits, "ea_iid"),
+        "non_iid": _run_assessment(bits, "ea_non_iid")
+    }
+    return results
+
+def _run_assessment(bits: str, tool: str):
+    """
+    Helper function to run a specific NIST SP 800-90B assessment tool.
+    """
+     # The C++ tool expects raw bytes, not a string of '0's and '1's.
     # We need to convert the bitstring into a byte array.
     if len(bits) % 8 != 0:
         # Pad with zeros if not a multiple of 8
@@ -24,10 +34,10 @@ def run_sp800_90b_assessment(bits: str):
         tmp_path = tmp.name
 
     results = {}
-    # Path to the compiled non-IID test executable
-    executable_path = os.path.join("NIST.SP800-90B_Entropy-Assessment", "cpp", "ea_non_iid")
+    # Path to the compiled test executable
+    executable_path = os.path.join("NIST.SP800-90B_Entropy-Assessment", "cpp", tool)
     try:
-        # Run the non-IID test
+        # Run the test
         # The tool takes the file path and bits per symbol (8 for bytes)
         command = [executable_path, "-v", tmp_path, "8"]
         process = subprocess.run(command, capture_output=True, text=True, check=True)
