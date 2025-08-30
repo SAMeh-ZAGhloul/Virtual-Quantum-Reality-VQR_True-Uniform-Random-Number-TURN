@@ -43,7 +43,7 @@ graph TD
         G[Gradio <br> Web UI] --> E;
 
         H[vqr-turn2.py <br> Alternative RNG & Tester];
-        I[NIST SP 800-22 Tests] --> H;
+        I[NIST SP 800-90B Assessments] --> H;
         J[Gradio <br> Web UI] --> H;
     end
 
@@ -96,15 +96,17 @@ There are three Python scripts in this project:
 
 *   `vqr-turn1.py`: This script exposes the `VQRTurnRNG` from `vqr_turn_rng.py` as a web service. It uses FastAPI to create REST and JSON-RPC 2.0 endpoints for generating random floats, 64-bit unsigned integers, and bytes. It also provides a simple web interface using Gradio for easy demonstration.
 
-*   `vqr-turn2.py`: This file presents an alternative implementation that focuses on generating random bits and testing their quality using the NIST SP 800-22 statistical test suite. It also provides a Gradio UI and a FastAPI REST API. This implementation uses Python's standard `random` module for bit generation, which is not cryptographically secure, and is intended for demonstration and testing purposes.
+*   `vqr-turn2.py`: This file presents an alternative implementation that focuses on generating random bits and testing their quality using the NIST SP 800-90B entropy assessment suite. It also provides a Gradio UI and a FastAPI REST API. This implementation uses Python's standard `random` module for bit generation, which is not cryptographically secure, and is intended for demonstration and testing purposes.
 
 ### Installation
 
 To run these scripts, you need to install the required Python packages. You can install them using pip:
 
 ```bash
-pip install fastapi uvicorn gradio sp80022suite
+pip install fastapi uvicorn gradio
 ```
+
+You will also need to compile the C++ NIST SP 800-90B assessment tool. Please see the `NIST.SP800-90B_Entropy-Assessment/README.md` for instructions.
 
 ### Usage
 
@@ -167,5 +169,5 @@ For more detailed instructions, please refer to the `QPP/README.md` file.
 
 ## Additional Files
 
-*   `NIST-80022-Statistical Test Suite.pdf`: This document contains the NIST 800-22 Statistical Test Suite, which is relevant for evaluating the randomness of the VQR/TURN generator.
+*   `NIST.SP.800-90B.pdf`: This document contains the NIST SP 800-90B Recommendation for the Entropy Sources Used for Random Bit Generation.
 *   `Quantum Permutation Pad.pdf`: This PDF provides foundational information about the Quantum Permutation Pad (QPP) concept.
