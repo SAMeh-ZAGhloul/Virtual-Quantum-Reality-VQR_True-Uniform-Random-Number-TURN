@@ -1,8 +1,8 @@
 ARCH ?= x86
 
-CXX ?= $(CROSS_COMPILE)g++
+CXX = clang++
 
-CXXFLAGS = -std=c++11 -fopenmp -O2 -ffloat-store -I/usr/include/jsoncpp
+CXXFLAGS = -std=c++11 -Xpreprocessor -fopenmp -O2 -I/opt/homebrew/include -I/opt/homebrew/opt/libomp/include
 ifeq ($(ARCH),x86)
 CXXFLAGS += -march=native
 endif
@@ -11,7 +11,7 @@ endif
 #CXXFLAGS = -g -Wno-padded -Wno-disabled-macro-expansion -Wno-gnu-statement-expression -Wno-bad-function-cast -fopenmp -O1 -fsanitize=address -fsanitize=undefined -fno-omit-frame-pointer -fdenormal-fp-math=ieee -msse2 -march=native -I/usr/include/jsoncpp
 #static analysis in clang using
 #scan-build-15 --use-c++=/usr/bin/clang++-15 make
-LIB = -lbz2 -lpthread -ldivsufsort -ldivsufsort64
+LIB = -L/opt/homebrew/lib -L/opt/homebrew/opt/libomp/lib -lomp -lbz2 -lpthread -ldivsufsort -ldivsufsort64
 COND_LIB = -lmpfr -lgmp
 SHARED_LIB = -ljsoncpp -lcrypto
 INC =
