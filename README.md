@@ -172,6 +172,7 @@ To call it cryptographically secure, you’d need properties like:
 ### dieharder-Robert G. Brown
 
 https://webhome.phy.duke.edu/~rgb/General/dieharder.php
+
 https://github.com/seehuhn/dieharder
 
 ### Sample Test Results
@@ -258,7 +259,25 @@ For more detailed instructions, please refer to the `QPP/README.md` file.
 
 ---
 
+## Testing Frameworks and Datasets
+
+This repository includes several directories containing testing frameworks, datasets, and related documentation for evaluating random number generators:
+
+*   **Dieharder/**: Contains files related to the Dieharder suite of statistical tests for random number generators.
+*   **ent-random/**: Includes the `ent` utility for basic statistical analysis of random data.
+*   **ent3000/**: Contains Java libraries, likely for entropy assessment or related tasks.
+*   **NIST.SP800-22-sts/**: Houses the NIST Special Publication 800-22, a statistical test suite for random and pseudorandom number generators for applications in cryptographic systems and information technology.
+*   **NIST.SP800-90B_Entropy-Assessment/**: Contains tools and data for assessing entropy sources as per NIST SP 800-90B.
+*   **ReallyReallyRandom-RRR-Tests/**: Includes Python scripts for running various randomness tests, possibly including IID tests.
+
 ## Additional Files
 
 * `NIST.SP.800-90B.pdf`: This document contains the NIST SP 800-90B Recommendation for the Entropy Sources Used for Random Bit Generation.
 * `Quantum Permutation Pad.pdf`: This PDF provides foundational information about the Quantum Permutation Pad (QPP) concept.
+* `Dieharder/dieharder_modified version.pdf`: Information about Dieharder tests.
+* `Dieharder/dieharder-Robert G. Brown.pdf`: Documentation related to Robert G. Brown's work on Dieharder.
+* `PDF Papers/DieHarder-Random Number Tests.pdf`: A paper detailing the DieHarder random number tests.
+* `PDF Papers/NIST.SP-800-22-Statistical Test Suite.pdf`: NIST Special Publication 800-22, a statistical test suite for random number generators.
+* `PDF Papers/NIST.SP800-22 Tests is Obsolete.pdf`: A document discussing the obsolescence of NIST SP 800-22.
+* `PDF Papers/ReallyReallyRandom-RRR-Tests.pdf`: Documentation for ReallyReallyRandom (RRR) tests.
+* `PDF Papers/Robert G. Brown's General Tools Page.pdf`: A page with general tools from Robert G. Brown.
