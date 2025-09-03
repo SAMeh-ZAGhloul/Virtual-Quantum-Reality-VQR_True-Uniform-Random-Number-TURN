@@ -5,6 +5,7 @@ This repository hosts two distinct but related projects: **Virtual Quantum Reali
 ---
 
 ## Table of Contents
+
 - [VQR – True Uniform Randomness (TURN)](#vqr--true-uniform-randomness-turn)
   - [Overview](#overview)
   - [Architecture Diagram](#architecture-diagram)
@@ -66,37 +67,36 @@ The `vqr_turn_rng.py` script implements a conceptual **Virtual Quantum Reality /
 
 The architecture follows a sophisticated multi-stage pipeline to produce high-quality random numbers:
 
-1.  **Entropy Collection:**
-    *   It gathers initial randomness (entropy) from two distinct sources:
-        *   `os.urandom`: A cryptographically strong source of randomness provided by the operating system.
-        *   **Timing Jitter:** A custom function (`_timing_jitter_bytes`) that measures the tiny, unpredictable variations in CPU execution time from a tight loop. This mimics a physical entropy source.
+1. **Entropy Collection:**
 
-2.  **Health Checks & Conditioning:**
-    *   Before use, the raw entropy undergoes online **health checks** to detect potential failures or biases. These include:
-        *   A **Repetition Count Test** to ensure no long runs of identical bits.
-        *   An **Adaptive Proportion Test** to verify that the number of 0s and 1s is balanced.
-    *   The raw data is then passed through a **Von Neumann extractor** (`_von_neumann`), a classic algorithm that removes statistical bias from a bitstream.
-    *   Finally, the debiased entropy is mixed and condensed into a fixed-size seed using the **SHA3-256** hash function.
+   * It gathers initial randomness (entropy) from two distinct sources:
+     * `os.urandom`: A cryptographically strong source of randomness provided by the operating system.
+     * **Timing Jitter:** A custom function (`_timing_jitter_bytes`) that measures the tiny, unpredictable variations in CPU execution time from a tight loop. This mimics a physical entropy source.
+2. **Health Checks & Conditioning:**
 
-3.  **Random Number Generation:**
-    *   The processed seed is used to initialize a **HMAC-DRBG** (Deterministic Random Bit Generator), which is implemented following the style of NIST SP 800-90A, a widely recognized standard.
-    *   This DRBG is the core engine that expands the initial seed into a long stream of pseudo-random bytes.
+   * Before use, the raw entropy undergoes online **health checks** to detect potential failures or biases. These include:
+     * A **Repetition Count Test** to ensure no long runs of identical bits.
+     * An **Adaptive Proportion Test** to verify that the number of 0s and 1s is balanced.
+   * The raw data is then passed through a **Von Neumann extractor** (`_von_neumann`), a classic algorithm that removes statistical bias from a bitstream.
+   * Finally, the debiased entropy is mixed and condensed into a fixed-size seed using the **SHA3-256** hash function.
+3. **Random Number Generation:**
 
-4.  **Reseeding:**
-    *   To ensure long-term security and prevent the internal state from becoming stale, the generator automatically **reseeds** itself with fresh entropy after generating a certain amount of data (1 MB by default).
+   * The processed seed is used to initialize a **HMAC-DRBG** (Deterministic Random Bit Generator), which is implemented following the style of NIST SP 800-90A, a widely recognized standard.
+   * This DRBG is the core engine that expands the initial seed into a long stream of pseudo-random bytes.
+4. **Reseeding:**
 
-5.  **Statistical Validation:**
-    *   The file also includes utility functions for basic statistical analysis of the output, such as a **Monobit Frequency Test** and a **Chi-Square Uniformity Test**, to provide a sanity check on the quality of the generated random numbers.
+   * To ensure long-term security and prevent the internal state from becoming stale, the generator automatically **reseeds** itself with fresh entropy after generating a certain amount of data (1 MB by default).
+5. **Statistical Validation:**
+
+   * The file also includes utility functions for basic statistical analysis of the output, such as a **Monobit Frequency Test** and a **Chi-Square Uniformity Test**, to provide a sanity check on the quality of the generated random numbers.
 
 ### Implementations
 
 There are three Python scripts in this project:
 
-*   `vqr_turn_rng.py`: This file contains the core implementation of the VQR/TURN random number generator. For a detailed breakdown, see the [Core RNG Engine Analysis](#core-rng-engine-vqr_turn_rngpy-analysis) section above.
-
-*   `vqr-turn1.py`: This script exposes the `VQRTurnRNG` from `vqr_turn_rng.py` as a web service. It uses FastAPI to create REST and JSON-RPC 2.0 endpoints for generating random floats, 64-bit unsigned integers, and bytes. It also provides a simple web interface using Gradio for easy demonstration.
-
-*   `vqr-turn2.py`: This file presents an alternative implementation that focuses on generating random bits and testing their quality using the NIST SP 800-90B entropy assessment suite. It also provides a Gradio UI and a FastAPI REST API. This implementation uses Python's standard `random` module for bit generation, which is not cryptographically secure, and is intended for demonstration and testing purposes.
+* `vqr_turn_rng.py`: This file contains the core implementation of the VQR/TURN random number generator. For a detailed breakdown, see the [Core RNG Engine Analysis](#core-rng-engine-vqr_turn_rngpy-analysis) section above.
+* `vqr-turn1.py`: This script exposes the `VQRTurnRNG` from `vqr_turn_rng.py` as a web service. It uses FastAPI to create REST and JSON-RPC 2.0 endpoints for generating random floats, 64-bit unsigned integers, and bytes. It also provides a simple web interface using Gradio for easy demonstration.
+* `vqr-turn2.py`: This file presents an alternative implementation that focuses on generating random bits and testing their quality using the NIST SP 800-90B entropy assessment suite. It also provides a Gradio UI and a FastAPI REST API. This implementation uses Python's standard `random` module for bit generation, which is not cryptographically secure, and is intended for demonstration and testing purposes.
 
 ### Installation
 
@@ -112,24 +112,40 @@ You will also need to compile the C++ NIST SP 800-90B assessment tool. Please se
 
 You can run each of the `vqr-turn` scripts as follows:
 
-*   **`vqr-turn1.py`**: This will start a web server with the Gradio UI and the API.
-    ```bash
-    python vqr-turn1.py
-    ```
-    - The FastAPI service will be available at `http://localhost:8000`.
-    - The Gradio UI will be available at `http://localhost:7860`.
+* **`vqr-turn1.py`**: This will start a web server with the Gradio UI and the API.
 
-*   **`vqr-turn2.py`**: This script can be run in two modes.
-    - To launch the Gradio UI:
-      ```bash
-      python vqr-turn2.py
-      ```
-    - To launch the FastAPI API:
-      ```bash
-      python vqr-turn2.py api
-      ```
+  ```bash
+  python vqr-turn1.py
+  ```
+
+  - The FastAPI service will be available at `http://localhost:8000`.
+  - The Gradio UI will be available at `http://localhost:7860`.
+* **`vqr-turn2.py`**: This script can be run in two modes.
+
+  - To launch the Gradio UI:
+    ```bash
+    python vqr-turn2.py
+    ```
+  - To launch the FastAPI API:
+    ```bash
+    python vqr-turn2.py api
+    ```
 
 ---
+
+### Entroby Test (ent) - Sample Results
+
+1- **Entropy = 7.999994 bits per byte**  The maximum entropy possible for 8-bit data is **8 bits per byte**.  Your file is essentially perfectly random, or at least indistinguishable from random by this test.  Practical meaning: No lossless compression can shrink it further.  
+
+2- **Optimum compression = 0%**  Since entropy is already maximal, compression algorithms like gzip or bzip2 would not reduce the size.  The file is already “**incompressible**.”
+
+3- **Chi-square distribution = 222.90 (p ≈ 92.73%)**  The chi-square test checks uniformity of byte distribution **(0–255)**.  A value in the middle range is expected for random data.  Here, the probability that a truly random sequence would produce a higher chi-square is 92.73%, which is still within acceptable randomness expectations.  In short: looks random.
+
+4- **Arithmetic mean = 127.4907 (ideal = 127.5)**  Perfectly balanced between 0–255.  Suggests no bias toward high or low byte values.
+
+5- **Monte Carlo value for Pi = 3.142776116 (error 0.04%)**  ent estimates π by randomly sampling coordinate pairs from the data.  Your result is very close to **true π** (3.14159…), which again indicates strong randomness.
+
+6- **Serial correlation coefficient = 0.000303 (ideal = 0.0)**  Measures how much each byte is correlated with the previous one.  A value near 0 indicates no correlation; your file is essentially uncorrelated.
 
 ## Quantum Privacy Preserving (QPP)
 
@@ -141,19 +157,19 @@ This project is forked from: https://github.com/AlainChance/QPP-Alain, and conta
 
 The `QPP/` folder contains the implementation of the Quantum Permutation Pad (QPP) with Qiskit Runtime.
 
-*   `QPP/Alice`: Contains the code for Alice, the sender, including Jupyter notebooks for agent setup and QPP execution.
-*   `QPP/Bob`: Contains the code for Bob, the receiver, including Jupyter notebooks for agent setup and QPP execution.
-*   `QPP/QPP_2_qubits`: Contains the implementation and related files for the 2-qubit QPP.
-*   `QPP/QPP_4_qubits`: Contains the implementation and related files for the 4-qubit QPP.
-*   `QPP/QPP_9_qubits`: Contains the implementation and related files for the 9-qubit QPP.
-*   `QPP/README.md`: Specific documentation for the QPP project.
+* `QPP/Alice`: Contains the code for Alice, the sender, including Jupyter notebooks for agent setup and QPP execution.
+* `QPP/Bob`: Contains the code for Bob, the receiver, including Jupyter notebooks for agent setup and QPP execution.
+* `QPP/QPP_2_qubits`: Contains the implementation and related files for the 2-qubit QPP.
+* `QPP/QPP_4_qubits`: Contains the implementation and related files for the 4-qubit QPP.
+* `QPP/QPP_9_qubits`: Contains the implementation and related files for the 9-qubit QPP.
+* `QPP/README.md`: Specific documentation for the QPP project.
 
 ### QPP Setup and Execution
 
-1.  **Set up IBM Cloud account (optional)**: Refer to [this guide](https://quantum.cloud.ibm.com/docs/en/guides/cloud-setup) for details on how to set up your IBM Cloud account on the upgraded IBM Quantum Platform.
-2.  **Run `Bob_agent.ipynb`**: This notebook starts a receiver agent (uvicorn server) to receive files.
-3.  **Run `QPP_Alice.ipynb`**: This notebook guides Alice through the QPP setup.
-4.  **Run `QPP_Bob.ipynb`**: This notebook guides Bob through the decryption process.
+1. **Set up IBM Cloud account (optional)**: Refer to [this guide](https://quantum.cloud.ibm.com/docs/en/guides/cloud-setup) for details on how to set up your IBM Cloud account on the upgraded IBM Quantum Platform.
+2. **Run `Bob_agent.ipynb`**: This notebook starts a receiver agent (uvicorn server) to receive files.
+3. **Run `QPP_Alice.ipynb`**: This notebook guides Alice through the QPP setup.
+4. **Run `QPP_Bob.ipynb`**: This notebook guides Bob through the decryption process.
 
 For more detailed instructions, please refer to the `QPP/README.md` file.
 
@@ -169,5 +185,5 @@ For more detailed instructions, please refer to the `QPP/README.md` file.
 
 ## Additional Files
 
-*   `NIST.SP.800-90B.pdf`: This document contains the NIST SP 800-90B Recommendation for the Entropy Sources Used for Random Bit Generation.
-*   `Quantum Permutation Pad.pdf`: This PDF provides foundational information about the Quantum Permutation Pad (QPP) concept.
+* `NIST.SP.800-90B.pdf`: This document contains the NIST SP 800-90B Recommendation for the Entropy Sources Used for Random Bit Generation.
+* `Quantum Permutation Pad.pdf`: This PDF provides foundational information about the Quantum Permutation Pad (QPP) concept.
