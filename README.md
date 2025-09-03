@@ -133,9 +133,20 @@ You can run each of the `vqr-turn` scripts as follows:
 
 ---
 
-### Entroby Test (ent) - Sample Results
+### Entroby Test (ent)
 
-1- **Entropy = 7.999994 bits per byte**  The maximum entropy possible for 8-bit data is **8 bits per byte**.  Your file is essentially perfectly random, or at least indistinguishable from random by this test.  Practical meaning: No lossless compression can shrink it further.  
+## Statistical Randomness (what ent tested)
+
+# Your file passes basic statistical tests:
+
+1- Entropy ~ 8 bits/byte
+2- Balanced distribution across all 256 byte values
+3- No correlation between bytes
+4- Monte Carlo π estimate close to the real value
+
+# This means the data is indistinguishable from random to simple statistical tools.
+
+1- **Entropy = 7.999994 bits per byte**  The maximum entropy possible for 8-bit data is **8 bits per byte**.  Your file is essentially perfectly random, or at least indistinguishable from random by this test.  Practical meaning: No lossless compression can shrink it further.
 
 2- **Optimum compression = 0%**  Since entropy is already maximal, compression algorithms like gzip or bzip2 would not reduce the size.  The file is already “**incompressible**.”
 
@@ -146,6 +157,70 @@ You can run each of the `vqr-turn` scripts as follows:
 5- **Monte Carlo value for Pi = 3.142776116 (error 0.04%)**  ent estimates π by randomly sampling coordinate pairs from the data.  Your result is very close to **true π** (3.14159…), which again indicates strong randomness.
 
 6- **Serial correlation coefficient = 0.000303 (ideal = 0.0)**  Measures how much each byte is correlated with the previous one.  A value near 0 indicates no correlation; your file is essentially uncorrelated.
+
+### Cryptographic Randomness
+
+## Cryptographic randomness is about unpredictability, not just passing statistical tests.
+
+# A weak pseudo-random number generator (PRNG) might pass ent but still be predictable if you know the algorithm/seed.
+
+To call it cryptographically secure, you’d need properties like:
+1- Non-determinism (can’t reconstruct the sequence from a partial output)
+2- Resistance to backtracking (knowing previous outputs doesn’t reveal future ones)
+3- Resistance to prediction (no feasible shortcut better than brute force)
+
+## dieharder-Robert G. Brown
+
+https://webhome.phy.duke.edu/~rgb/General/dieharder.php
+https://github.com/seehuhn/dieharder
+
+# Sample Test Results
+
+dieharder -a -f samples.bin
+#=============================================================================#
+# dieharder version 3.31.1 Copyright 2003 Robert G. Brown
+#=============================================================================#
+   rng_name    |           filename             |rands/second|
+        mt19937|                     samples.bin|  2.14e+08  |
+#=============================================================================#
+        test_name   |ntup| tsamples |psamples|  p-value |Assessment
+
+| Test Name               | ntup  | tsamples | psamples | p-value       | Assessment |
+| ----------------------- | ----- | -------- | -------- | ------------- | ---------- |
+| diehard_birthdays       | 0     | 100      | 100      | 0.92921659    | 🟢 PASSED  |
+| diehard_operm5          | 0     | 1000000  | 100      | 0.85979285    | 🟢 PASSED  |
+| diehard_rank_32x32      | 0     | 40000    | 100      | 0.86845104    | 🟢 PASSED  |
+| diehard_rank_6x8        | 0     | 100000   | 100      | 0.47508380    | 🟢 PASSED  |
+| diehard_bitstream       | 0     | 2097152  | 100      | 0.20007870    | 🟢 PASSED  |
+| diehard_opso            | 0     | 2097152  | 100      | 0.92720025    | 🟢 PASSED  |
+| diehard_oqso            | 0     | 2097152  | 100      | 0.97339456    | 🟢 PASSED  |
+| diehard_dna             | 0     | 2097152  | 100      | 0.25053825    | 🟢 PASSED  |
+| diehard_count_1s_str    | 0     | 256000   | 100      | 0.22948193    | 🟢 PASSED  |
+| diehard_count_1s_byt    | 0     | 256000   | 100      | 0.23258425    | 🟢 PASSED  |
+| diehard_parking_lot     | 0     | 12000    | 100      | 0.30644186    | 🟢 PASSED  |
+| diehard_2dsphere        | 2     | 8000     | 100      | 0.97238648    | 🟢 PASSED  |
+| diehard_3dsphere        | 3     | 4000     | 100      | 0.60172815    | 🟢 PASSED  |
+| diehard_squeeze         | 0     | 100000   | 100      | 0.10737538    | 🟢 PASSED  |
+| diehard_sums            | 0     | 100      | 100      | 0.04916443    | 🟢 PASSED  |
+| diehard_runs            | 0     | 100000   | 100      | 0.86049149    | 🟢 PASSED  |
+| diehard_runs            | 0     | 100000   | 100      | 0.73462738    | 🟢 PASSED  |
+| diehard_craps           | 0     | 200000   | 100      | 0.99974607    | 🟡 WEAK    |
+| diehard_craps           | 0     | 200000   | 100      | 0.65448055    | 🟢 PASSED  |
+| marsaglia_tsang_gcd     | 0     | 10000000 | 100      | 0.21899736    | 🟢 PASSED  |
+| marsaglia_tsang_gcd     | 0     | 10000000 | 100      | 0.99331908    | 🟢 PASSED  |
+| sts_monobit             | 1     | 100000   | 100      | 0.52185888    | 🟢 PASSED  |
+| sts_runs                | 2     | 100000   | 100      | 0.37388690    | 🟢 PASSED  |
+| sts_serial (1–16 runs) | …    | 100000   | 100      | various       | 🟢 PASSED  |
+| rgb_bitdist (1–12)     | …    | 100000   | 100      | various       | 🟢 PASSED  |
+| rgb_minimum_distance    | 2–5  | 10000    | 1000     | various       | 🟢 PASSED  |
+| rgb_permutations        | 2–5  | 100000   | 100      | various       | 🟢 PASSED  |
+| rgb_lagged_sum (0–32)  | 0–32 | 1000000  | 100      | various       | 🟢 PASSED  |
+| rgb_kstest_test         | 0     | 10000    | 1000     | 0.02450848    | 🟢 PASSED  |
+| dab_bytedistrib         | 0     | 51200000 | 1        | 0.67906192    | 🟢 PASSED  |
+| dab_dct                 | 256   | 50000    | 1        | 0.04672474    | 🟢 PASSED  |
+| dab_filltree (2 runs)   | 32    | 15000000 | 1        | 0.1545/0.3505 | 🟢 PASSED  |
+| dab_filltree2 (2 runs)  | 0–1  | 5000000  | 1        | 0.6399/0.5067 | 🟢 PASSED  |
+| dab_monobit2            | 12    | 65000000 | 1        | 0.88319991    | 🟢 PASSED  |
 
 ## Quantum Privacy Preserving (QPP)
 
