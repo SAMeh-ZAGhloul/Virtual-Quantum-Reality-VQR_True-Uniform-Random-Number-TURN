@@ -18,6 +18,9 @@ This repository hosts two distinct but related projects: **Virtual Quantum Reali
   - [QPP Directory Structure](#qpp-directory-structure)
   - [QPP Setup and Execution](#qpp-setup-and-execution)
   - [References](#references)
+- [Entroby Test (ent)](#entroby-test-ent)
+- [Cryptographic Randomness](#cryptographic-randomness)
+- [Testing Frameworks and Datasets](#testing-frameworks-and-datasets)
 - [Additional Files](#additional-files)
 
 ---
@@ -30,7 +33,7 @@ This project explores the conceptual and practical aspects of generating truly u
 
 ### Architecture Diagram
 
-The following diagram illustrates the architecture of the VQR/TURN project, its components, and its potential integration with the QPP project.
+The following diagram illustrates the architecture of the VQR/TURN project, its components, and its potential integration with the QPP project, as well as the included testing frameworks.
 
 ```mermaid
 graph TD
@@ -52,12 +55,22 @@ graph TD
         K[QPP Project <br> Qiskit Implementation];
     end
 
+    subgraph Testing Frameworks and Datasets
+        L[Dieharder]
+        M[ent-random]
+        N[ent3000]
+        O[NIST.SP800-22-sts]
+        P[NIST.SP800-90B_Entropy-Assessment]
+        Q[ReallyReallyRandom-RRR-Tests]
+    end
+
     subgraph Integrations
         A -- "Provides High-Quality Randomness For" --> K;
     end
 
     style VQR_TURN fill:#6cb7f0,stroke:#333,stroke-width:2px
     style QPP fill:#ccf,stroke:#333,stroke-width:2px
+    style Testing Frameworks and Datasets fill:#f9f,stroke:#333,stroke-width:2px
     style Integrations fill:#cfc,stroke:#333,stroke-width:2px
 ```
 
